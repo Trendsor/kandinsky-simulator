@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: trading-bot-data-ingestion
+data:
+  init.sql: |
+    -- Create a superuser
+    CREATE ROLE admin WITH LOGIN SUPERUSER PASSWORD 'your_secure_password';
+
+    -- Create additional roles or databases as needed
+    CREATE DATABASE trading_bot;
+    GRANT ALL PRIVILEGES ON DATABASE trading_bot TO admin;
+
+    -- Optional: Create schema for ingestion
+    CREATE SCHEMA ingestion;

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: trading-bot-data-ingestion
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+      - name: kafka
+        image: wurstmeister/kafka:latest
+        ports:
+        - containerPort: 9092
+        env:
+        - name: KAFKA_ADVERTISED_LISTENERS
+          valueFrom:
+            secretKeyRef:
+              name: kafka-secrets
+              key: KAFKA_ADVERTISED_LISTENERS
+        - name: KAFKA_LISTENERS
+          valueFrom:
+            secretKeyRef:
+              name: kafka-secrets
+              key: KAFKA_LISTENERS
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          valueFrom:
+            secretKeyRef:
+              name: kafka-secrets
+              key: KAFKA_ZOOKEEPER_CONNECT
+        resources:
+          requests:
+            memory: "512Mi"  # Match the updated resource request
+            cpu: "0.3"
+          limits:
+            memory: "768Mi"  # Match the updated resource limit
+            cpu: "0.5"

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tf-config
+data:
+  config: |
+    {
+      "cluster": {
+        "worker": ["worker-deployment-0:2222", "worker-deployment-1:2222", "worker-deployment-2:2222"]
+      },
+      "task": {
+        "type": "worker",
+        "index": "$(POD_NAME_SUFFIX)"
+      }
+    }

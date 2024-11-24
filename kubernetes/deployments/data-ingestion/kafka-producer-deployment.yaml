@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-producer
+  namespace: trading-bot-data-ingestion
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-producer
+  template:
+    metadata:
+      labels:
+        app: kafka-producer
+    spec:
+      containers:
+      - name: kafka-producer
+        image: mhupp/kafka-producer:latest
+        env:
+        - name: BROKER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: broker-data-api-secret
+              key: BROKER_API_KEY
+        - name: BROKER_API_URL
+          valueFrom:
+            secretKeyRef:
+              name: broker-data-api-secret
+              key: BROKER_API_URL
+        - name: BROKER_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: broker-data-api-secret
+              key: BROKER_API_SECRET
+        - name: KAFKA_BOOTSTRAP_SERVER
+          value: "kafka-service.trading-bot-data-ingestion.svc.cluster.local:9092"
+        ports:
+        - containerPort: 9092
+        resources:
+          requests:
+            memory: "256Mi"  # Ensure modest usage to fit under the quota
+            cpu: "200m"
+          limits:
+            memory: "512Mi"  # Maximum set to prevent exceeding quota
+            cpu: "500m"

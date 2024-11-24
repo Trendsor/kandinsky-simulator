@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: trading-bot-model-training
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: model-training-quota
+  namespace: trading-bot-model-training
+spec:
+  hard:
+    cpu: "2"
+    memory: "4Gi"
+    pods: "3"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: model-training-limits
+  namespace: trading-bot-model-training
+spec:
+  limits:
+  - default:
+      cpu: "2"
+      memory: "4Gi"
+    defaultRequest:
+      cpu: "1"
+      memory: "2Gi"
+    type: Container

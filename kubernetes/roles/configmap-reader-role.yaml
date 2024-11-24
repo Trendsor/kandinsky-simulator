@@ -1,0 +1,10 @@
+# configmap-reader-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: trading-bot-data-ingestion
+  name: configmap-reader-writer
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "update"]

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: websocket-session-lock
+  namespace: trading-bot-data-ingestion
+data:
+  session_status: "unlocked"  # Initial status, unlocked for a new session

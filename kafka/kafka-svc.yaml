@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  namespace: trading-bot-data-ingestion
+spec:
+  ports:
+  - port: 9092
+    targetPort: 9092
+  selector:
+    app: kafka
+  type: ClusterIP  # Allows other services within the cluster to access Kafka

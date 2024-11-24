@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: trading-bot-monitoring
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: monitoring-quota
+  namespace: trading-bot-monitoring
+spec:
+  hard:
+    cpu: "0.5"
+    memory: "512Mi"
+    pods: "3"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: monitoring-limits
+  namespace: trading-bot-monitoring
+spec:
+  limits:
+  - default:
+      cpu: "0.5"
+      memory: "512Mi"
+    defaultRequest:
+      cpu: "0.2"
+      memory: "256Mi"
+    type: Container

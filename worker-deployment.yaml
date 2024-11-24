@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 3  # Number of worker pods
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:  # This should be directly under template, not nested further
+      containers:
+        - name: worker
+          image: my-time-series-model:latest
+          imagePullPolicy: Never
+          command: ["python", "train.py"]
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "2Gi"
+            limits:
+              cpu: "1"
+              memory: "4Gi"
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          ports:
+            - containerPort: 2222  # Port for inter-pod communication

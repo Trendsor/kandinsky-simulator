@@ -1,0 +1,14 @@
+# role-binding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: configmap-access-binding
+  namespace: trading-bot-data-ingestion
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: trading-bot-data-ingestion
+roleRef:
+  kind: Role
+  name: configmap-reader-writer
+  apiGroup: rbac.authorization.k8s.io
