@@ -2,6 +2,8 @@ name: Deploy Alembic Migrations
 
 on:
   push:
+    branches:
+      - main
     paths:
     - database/migrations/**
     - database/migrations/alembic.ini
