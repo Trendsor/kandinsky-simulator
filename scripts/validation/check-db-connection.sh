@@ -13,7 +13,7 @@ fi
 # Check PostgreSQL connection
 echo "Checking PostgreSQL connection..."
 
-kubectl run postgres-client --rm -i --tty --image=postgres:13 --namespace trading-bot-data-ingestion -- \
+kubectl run postgres-client --rm -i --tty --image=postgres:13 --namespace trading-bot-ingestion -- \
   psql postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB -c "\q"
 
 if [ $? -eq 0 ]; then

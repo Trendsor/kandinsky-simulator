@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer
+  namespace: trading-bot-data-ingestion
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-consumer
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer
+    spec:
+      containers:
+      - name: kafka-consumer
+        image: mhupp/kafka-consumer:latest
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: kafka-secrets
+              key: KAFKA_BOOTSTRAP_SERVER
+        - name: KAFKA_TOPIC
+          value: "stock_data.trades"
+        - name: POSTGRES_CONN_STRING
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_CONN_STRING
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

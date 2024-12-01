@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: trading-bot-data-ingestion
+  namespace: trading-bot-ingestion
 spec:
   replicas: 1
   selector:

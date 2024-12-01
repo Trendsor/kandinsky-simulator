@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-data-processor
+  namespace: trading-bot-processing
+spec:
+  replicas: 2  # Can be scaled independently
+  selector:
+    matchLabels:
+      app: kafka-data-processor
+  template:
+    metadata:
+      labels:
+        app: kafka-data-processor
+    spec:
+      containers:
+      - name: kafka-data-processor
+        image: mhupp/kafka-data-processor:latest
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVER
+          value: "kafka-service.trading-bot-ingestion.svc.cluster.local:9092"

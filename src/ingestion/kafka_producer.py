@@ -15,7 +15,7 @@ KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER")
 BROKER_API_KEY = os.getenv("BROKER_API_KEY")
 BROKER_API_SECRET = os.getenv("BROKER_API_SECRET")
 BROKER_API_URL = os.getenv("BROKER_API_URL", "wss://stream.data.alpaca.markets/v2")
-NAMESPACE = os.getenv("NAMESPACE", "trading-bot-data-ingestion")
+NAMESPACE = os.getenv("NAMESPACE", "trading-bot-ingestion")
 
 # Initialize Kubernetes API client
 v1 = client.CoreV1Api()

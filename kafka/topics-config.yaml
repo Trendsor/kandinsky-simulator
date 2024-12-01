@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kafka-topics-config
-  namespace: trading-bot-data-ingestion
+  namespace: trading-bot-ingestion
 data:
   topics: |
     stock_data.trades

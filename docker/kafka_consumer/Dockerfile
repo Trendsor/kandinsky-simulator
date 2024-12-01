@@ -1,14 +1,21 @@
-# Base Python image
-FROM python:3.9-slim
+# Use a lightweight Python image
+FROM python:3.10-slim
 
-# Install dependencies
-RUN pip install --no-cache-dir confluent-kafka psycopg2-binary
+# Install necessary OS dependencies
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy consumer script into the container
-COPY kafka_consumer.py .
+# Copy and install Python dependencies
+COPY  docker/kafka_consumer/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Run the consumer
+# Copy the Kafka consumer script into the container
+COPY src/ingestion/kafka_consumer.py /app/kafka_consumer.py
+
+# Run the consumer script
 CMD ["python", "kafka_consumer.py"]

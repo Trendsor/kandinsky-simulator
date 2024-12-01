@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kafka-producer
-  namespace: trading-bot-data-ingestion
+  namespace: trading-bot-ingestion
 spec:
   replicas: 1
   selector:
@@ -33,7 +33,7 @@ spec:
               name: broker-data-api-secret
               key: BROKER_API_SECRET
         - name: KAFKA_BOOTSTRAP_SERVER
-          value: "kafka-service.trading-bot-data-ingestion.svc.cluster.local:9092"
+          value: "kafka-service.trading-bot-ingestion.svc.cluster.local:9092"
         ports:
         - containerPort: 9092
         resources:

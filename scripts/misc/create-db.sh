@@ -11,7 +11,7 @@ else
 fi
 
 # Define variables
-NAMESPACE="trading-bot-data-ingestion"
+NAMESPACE="trading-bot-ingestion"
 SCHEMA_FILE_ORIG="$(dirname "$0")/../../../database/schemas/ingestion/schema.sql"
 SCHEMA_FILE_TMP="$(dirname "$0")/../../../database/schemas/ingestion/schema_temp.sql"
 

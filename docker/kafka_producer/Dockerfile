@@ -15,7 +15,7 @@ COPY docker/kafka_producer/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the Kafka producer script into the container
-COPY src/data_ingestion/kafka_producer.py /app/kafka_producer.py
+COPY src/ingestion/kafka_producer.py /app/kafka_producer.py
 
 # Set the entry point to run the Kafka producer script
 CMD ["python", "kafka_producer.py"]

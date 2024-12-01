@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAMESPACE="trading-bot-data-ingestion"
+NAMESPACE="trading-bot-ingestion"
 KAFKA_POD_NAME=$(kubectl get pods -n $NAMESPACE -l app=kafka -o jsonpath="{.items[0].metadata.name}")
 
 echo "Checking Kafka status in namespace '$NAMESPACE'..."

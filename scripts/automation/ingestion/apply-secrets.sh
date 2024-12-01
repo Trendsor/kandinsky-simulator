@@ -14,7 +14,7 @@ else
   exit 1
 fi
 
-NAMESPACE="trading-bot-data-ingestion"
+NAMESPACE="trading-bot-ingestion"
 
 # Create or update postgres-secret
 kubectl -n $NAMESPACE create secret generic postgres-secret \
