@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-    - database/migrations/**
-    - database/migrations/alembic.ini
-    - database/migrations/requirements.txt
 
 jobs:
   build-and-push:
