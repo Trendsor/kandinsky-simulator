@@ -1,4 +1,4 @@
-name: Build and Deploy Alembic Migrations
+name: Alembic Migrations
 
 on:
   push:
