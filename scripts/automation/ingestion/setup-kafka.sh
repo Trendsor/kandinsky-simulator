@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_DIR="$(dirname "$0")/../../kafka"
+BASE_DIR="$(dirname "$0")/../../../kafka"
 
 # Function to check if a file exists and is not empty
 check_file() {

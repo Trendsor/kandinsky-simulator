@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: alembic-migrations
-  namespace: trading-bot-data-ingestion
+  namespace: trading-bot-ingestion
 spec:
   template:
     spec:
@@ -30,4 +30,9 @@ spec:
             secretKeyRef:
               name: postgres-secret
               key: POSTGRES_HOST
+        - name: POSTGRES_PORT
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PORT
       restartPolicy: Never

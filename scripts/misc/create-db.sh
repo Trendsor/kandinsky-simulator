@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV_FILE_PATH="$(dirname "$0")/../../../env/dev.env"
+ENV_FILE_PATH="$(dirname "$0")/../../../env/prod.env"
 
 # Load environment variables from .env file if it exists
 if [ -f "$ENV_FILE_PATH" ]; then

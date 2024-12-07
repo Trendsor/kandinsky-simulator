@@ -39,6 +39,11 @@ spec:
             secretKeyRef:
               name: postgres-secret
               key: POSTGRES_HOST
+        - name: POSTGRES_PORT
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PORT
         resources:
           requests:
             memory: "256Mi"
@@ -49,12 +54,7 @@ spec:
         volumeMounts:
           - mountPath: /var/lib/postgresql/data
             name: postgres-storage
-          - mountPath: /docker-entrypoint-initdb.d/
-            name: init-script
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
-        - name: init-script
-          configMap:
-            name: postgres-init-scripts

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load environment variables from .env file if available
-ENV_FILE_PATH="$(dirname "$0")/../../env/dev.env"
+ENV_FILE_PATH="$(dirname "$0")/../../env/prod.env"
 
 if [ -f "$ENV_FILE_PATH" ]; then
   export $(grep -v '^#' "$ENV_FILE_PATH" | grep -v '^$' | xargs)
@@ -14,7 +14,7 @@ fi
 echo "Checking PostgreSQL connection..."
 
 kubectl run postgres-client --rm -i --tty --image=postgres:13 --namespace trading-bot-ingestion -- \
-  psql postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB -c "\q"
+  psql postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB -c "\q"
 
 if [ $? -eq 0 ]; then
   echo "PostgreSQL connection successful."

@@ -4,7 +4,7 @@
 BASE_DIR="$(dirname "$0")/../../../kubernetes/secrets"
 
 # Specify the path to the .env file
-ENV_FILE_PATH="$(dirname "$0")/../../../env/dev.env"
+ENV_FILE_PATH="$(dirname "$0")/../../../env/prod.env"
 
 # Load environment variables from .env file if it exists
 if [ -f "$ENV_FILE_PATH" ]; then
@@ -22,6 +22,8 @@ kubectl -n $NAMESPACE create secret generic postgres-secret \
     --from-literal=POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
     --from-literal=POSTGRES_DB="$POSTGRES_DB" \
     --from-literal=POSTGRES_HOST="$POSTGRES_HOST" \
+    --from-literal=POSTGRES_PORT="$POSTGRES_PORT" \
+    --from-literal=POSTGRES_CONN_STRING="$POSTGRES_CONN_STRING" \
     --dry-run=client -o yaml | kubectl apply -f -
 
 # Create or update broker-data-api-secret

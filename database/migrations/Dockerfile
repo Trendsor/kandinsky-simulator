@@ -1,17 +1,22 @@
-# Base Python image
 FROM python:3.10-slim
 
-# Set working directory
+# Install dependencies
+RUN apt-get update && apt-get install -y libpq-dev gcc && pip install --no-cache-dir psycopg2-binary alembic
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the Alembic migration directory and related files
-COPY database/migrations /app/migrations
-COPY database/migrations/alembic.ini /app/alembic.ini
+# Copy project files, including src and migrations
 COPY src /app/src
-COPY database/migrations/requirements.txt /app/
+COPY database/migrations/alembic /app/alembic
+COPY database/migrations/alembic.ini /app/alembic.ini
+COPY database/migrations/requirements.txt /app/requirements.txt
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies
+RUN pip install -r requirements.txt
 
-# Run Alembic migrations as the default command
+# Set PYTHONPATH for Alembic to find src
+ENV PYTHONPATH="/app:$PYTHONPATH"
+
+# Default command
 CMD ["alembic", "upgrade", "head"]

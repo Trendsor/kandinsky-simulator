@@ -1,4 +1,5 @@
 import os
+import json
 from kubernetes import client, config
 from alpaca.data.live.stock import StockDataStream
 from confluent_kafka import Producer
@@ -57,7 +58,7 @@ if get_session_status() == "unlocked":
             'timestamp': str(data.timestamp)
         }
         print("Sending data to Kafka:", trade_data)
-        producer.produce(KAFKA_TOPIC, value=str(trade_data))
+        producer.produce(KAFKA_TOPIC, value=json.dumps(trade_data).encode('utf-8'))
         producer.flush()
 
     print("Subscribing to trade stream.")

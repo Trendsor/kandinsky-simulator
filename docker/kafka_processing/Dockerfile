@@ -1,14 +1,20 @@
 # Base Python image
 FROM python:3.10-slim
 
-# Install dependencies
-COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
-
-# Copy the processing script
-COPY src/kafka_processing/consumer_preprocessing.py /app/consumer_preprocessing.py
+# Install necessary OS dependencies
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
+# Install dependencies
+COPY docker/kafka_processing/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the processing script
+COPY src/processing /app/processing
+
 # Run the Kafka Consumer
-CMD ["python", "consumer_preprocessing.py"]
+CMD ["python", "processing/kafka_consumer_preprocessing.py"]

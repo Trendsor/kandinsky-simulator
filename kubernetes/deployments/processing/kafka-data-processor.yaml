@@ -4,7 +4,7 @@ metadata:
   name: kafka-data-processor
   namespace: trading-bot-processing
 spec:
-  replicas: 2  # Can be scaled independently
+  replicas: 1
   selector:
     matchLabels:
       app: kafka-data-processor
@@ -15,7 +15,21 @@ spec:
     spec:
       containers:
       - name: kafka-data-processor
-        image: mhupp/kafka-data-processor:latest
+        image: mhupp/kafka-consumer-processing:latest
         env:
         - name: KAFKA_BOOTSTRAP_SERVER
           value: "kafka-service.trading-bot-ingestion.svc.cluster.local:9092"
+        - name: RAW_TOPIC
+          value: "stock_data.trades"
+        - name: PROCESSED_TOPIC
+          value: "processed-stock-data"
+        - name: POSTGRES_CONN_STRING
+          value: dbname='trading_bot' user='admin' password='password' host='postgres-svc.trading-bot-ingestion.svc.cluster.local' port=5432
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+      restartPolicy: Always

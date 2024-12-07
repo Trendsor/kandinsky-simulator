@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_DIR="$(dirname "$0")/../../database"
+BASE_DIR="$(dirname "$0")/../../../database"
 
 # Function to check if a file exists and is not empty
 check_file() {
@@ -15,8 +15,9 @@ check_file "$BASE_DIR/postgres-deployment.yaml"
 check_file "$BASE_DIR/postgres-svc.yaml"
 
 # Apply psql Deployment
-kubectl apply -f "$BASE_DIR/postgres-deployment.yaml"
 kubectl apply -f "$BASE_DIR/postgres-svc.yaml"
+kubectl apply -f "$BASE_DIR/postgres-volume.yaml"
+kubectl apply -f "$BASE_DIR/postgres-deployment.yaml"
 
 
 echo "Postgres setup completed."
