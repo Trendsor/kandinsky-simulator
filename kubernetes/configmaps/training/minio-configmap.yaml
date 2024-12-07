@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minio-config
+  namespace: trading-bot-model-training
+data:
+  buckets: |
+    training-data
+    trained-models

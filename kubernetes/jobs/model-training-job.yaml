@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: model-training-job
+  namespace: trading-bot-model-training
+spec:
+  template:
+    spec:
+      containers:
+      - name: model-training
+        image: mhupp/model-training:latest
+        env:
+        - name: MINIO_ENDPOINT
+          value: http://minio-svc.trading-bot-model-training.svc.cluster.local:9000
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_USER
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_PASSWORD
+        - name: BUCKET_NAME
+          value: model-storage
+        volumeMounts:
+        - name: model-data
+          mountPath: /data
+      volumes:
+      - name: model-data
+        persistentVolumeClaim:
+          claimName: minio-pvc
+      restartPolicy: Never
