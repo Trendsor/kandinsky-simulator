@@ -7,14 +7,18 @@ RUN apt-get update && apt-get install -y \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
+# Set the working directory
 WORKDIR /app
 
-# Install dependencies
+# Install Python dependencies
 COPY docker/kafka_processing/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the processing script
-COPY src/processing /app/processing
+# Copy the entire `src` directory
+COPY src /app/src
+
+# Set PYTHONPATH to include `/app/src`
+ENV PYTHONPATH=/app
 
 # Run the Kafka Consumer
-CMD ["python", "processing/kafka_consumer_preprocessing.py"]
+CMD ["python", "src/processing/kafka_consumer_preprocessing.py"]

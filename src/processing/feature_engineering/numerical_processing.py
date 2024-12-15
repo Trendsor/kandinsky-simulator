@@ -43,8 +43,23 @@ def process_numerical(raw_data, historical_data, window=200):
         # Sort combined data by timestamp (just in case)
         combined_data = combined_data.sort_values(by='timestamp').reset_index(drop=True)
 
-        # Calculate rolling mean (200-day mean by default)
+        # Calculate rolling mean/std (200-day mean by default)
         combined_data[f'rolling_mean_{window}'] = combined_data['price'].rolling(window=window, min_periods=1).mean()
+        combined_data[f'rolling_std_{window}'] = combined_data['price'].rolling(window=window, min_periods=1).std()
+
+        combined_data['target'] = 0 # Default to 0
+        combined_data.loc[combined_data['price'].shift(-1) > combined_data['price'], 'target'] = 1
+        combined_data.loc[combined_data['price'].shift(-1) < combined_data['price'], 'target'] = -1
+
+        # Adjust target for abnormal volatility
+        combined_data.loc[
+            combined_data['price'].shift(-1) > combined_data['price'] + combined_data[f'rolling_std_{window}'],
+            'target'
+        ] = 2
+        combined_data.loc[
+            combined_data['price'].shift(-1) < combined_data['price'] + combined_data[f'rolling_std_{window}'],
+            'target'
+        ] = -2
 
         return combined_data
     except Exception as e:

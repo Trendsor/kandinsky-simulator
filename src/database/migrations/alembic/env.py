@@ -6,13 +6,13 @@ from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
 from alembic import context
 from src.database.models import Base
 
 # Load the .env file located at ../../../env/dev.env
-dotenv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../env/dev.env"))
+dotenv_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../env/dev.env"))
 load_dotenv(dotenv_path)
 
 # this is the Alembic Config object, which provides

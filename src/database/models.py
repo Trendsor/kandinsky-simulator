@@ -26,3 +26,5 @@ class StockDataProcessed(Base):
     size = Column(Integer, nullable=False)
     timestamp = Column(TIMESTAMP, nullable=False)
     rolling_mean_200 = Column(DECIMAL)
+    rolling_std_200 = Column(DECIMAL)
+    target = Column(Integer)

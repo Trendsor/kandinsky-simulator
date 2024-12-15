@@ -13,6 +13,19 @@ spec:
       labels:
         app: kafka-producer
     spec:
+      initContainers:
+      - name: reset-session-lock
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          kubectl patch configmap websocket-session-lock -n trading-bot-ingestion --type=merge -p '{"data":{"session_status":"unlocked"}}'
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "kubernetes.default.svc.cluster.local"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "443"
       containers:
       - name: kafka-producer
         image: mhupp/kafka-producer:latest
@@ -38,8 +51,8 @@ spec:
         - containerPort: 9092
         resources:
           requests:
-            memory: "256Mi"  # Ensure modest usage to fit under the quota
+            memory: "256Mi"
             cpu: "200m"
           limits:
-            memory: "512Mi"  # Maximum set to prevent exceeding quota
+            memory: "512Mi"
             cpu: "500m"

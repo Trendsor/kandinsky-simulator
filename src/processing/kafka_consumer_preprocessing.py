@@ -6,9 +6,19 @@ from pipeline import preprocess_data
 import logging
 import pandas as pd
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("kafka-consumer-preprocessing")
+from src.utils.logging import setup_logger
+
+# Initialize logger
+logger = setup_logger(
+    name="kafka-consumer-preprocessing",
+    log_file="logs/consumer_preprocessing.log",
+    level=logging.DEBUG,
+    file_log_level=logging.DEBUG,
+    console_log_level=logging.INFO,
+)
+
+logger.info("Consumer started.")
+
 
 # Kafka Configurations
 RAW_TOPIC = "stock_data.trades"
@@ -39,8 +49,8 @@ def save_to_db(processed_data, conn, cur):
     """
     try:
         insert_query = """
-        INSERT INTO stock_data_processed (symbol, price, size, timestamp, rolling_mean_200)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO stock_data_processed (symbol, price, size, timestamp, rolling_mean_200, rolling_std_200, target)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
         cur.execute(insert_query, (
             processed_data["symbol"],
@@ -48,6 +58,8 @@ def save_to_db(processed_data, conn, cur):
             processed_data["size"],
             processed_data["timestamp"],
             processed_data["rolling_mean_200"],
+            processed_data["rolling_std_200"],
+            processed_data["target"],
         ))
         conn.commit()
         logger.info(f"Saved processed data to DB: {processed_data}")

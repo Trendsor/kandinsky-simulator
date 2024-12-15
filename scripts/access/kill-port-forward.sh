@@ -3,7 +3,7 @@
 # Define the services to match in the process list
 SERVICES=("minio-svc" "postgres-svc")
 
-LOG_FILE="port-forward-cleanup.log"
+LOG_FILE="scripts/logs/port-forward-cleanup.log"
 echo "$(date): Starting port-forward cleanup." >> $LOG_FILE
 
 for service in "${SERVICES[@]}"; do

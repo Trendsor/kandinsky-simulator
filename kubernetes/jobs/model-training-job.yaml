@@ -10,8 +10,16 @@ spec:
       - name: model-training
         image: mhupp/model-training:latest
         env:
+        - name: POSTGRES_CONN_STRING
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_CONN_STRING
         - name: MINIO_ENDPOINT
-          value: http://minio-svc.trading-bot-model-training.svc.cluster.local:9000
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ENDPOINT
         - name: MINIO_ACCESS_KEY
           valueFrom:
             secretKeyRef:

@@ -10,9 +10,9 @@ metadata:
   namespace: trading-bot-ingestion
 spec:
   hard:
-    cpu: "1.5"             # Allows flexibility across Kafka and PostgreSQL
-    memory: "2Gi"          # Increased to 2Gi for better allocation to both services
-    pods: "5"
+    cpu: "6"             # Increase CPU to match your total node capacity
+    memory: "12Gi"       # Increase memory to match your node capacity
+    pods: "20"
 ---
 apiVersion: v1
 kind: LimitRange
@@ -22,9 +22,9 @@ metadata:
 spec:
   limits:
   - default:
-      cpu: "0.7"           # Slightly increased to cover PostgreSQL needs
-      memory: "1Gi"        # Set to 1Gi for PostgreSQL and Kafka container limits
+      cpu: "1"             # Increased from 0.7 to 1 CPU for containers
+      memory: "1.5Gi"      # Increased from 1Gi to 1.5Gi
     defaultRequest:
-      cpu: "0.5"
-      memory: "512Mi"      # Initial request still at 512Mi
+      cpu: "0.7"           # Increased from 0.5 to 0.7 CPU
+      memory: "1Gi"        # Increased from 512Mi to 1Gi
     type: Container

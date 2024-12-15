@@ -8,9 +8,9 @@ WORKDIR /app
 
 # Copy project files, including src and migrations
 COPY src /app/src
-COPY database/migrations/alembic /app/alembic
-COPY database/migrations/alembic.ini /app/alembic.ini
-COPY database/migrations/requirements.txt /app/requirements.txt
+COPY src/database/migrations/alembic /app/alembic
+COPY src/database/migrations/alembic.ini /app/alembic.ini
+COPY src/database/migrations/requirements.txt /app/requirements.txt
 
 # Install Python dependencies
 RUN pip install -r requirements.txt

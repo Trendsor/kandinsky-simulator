@@ -17,6 +17,9 @@ fi
 INGESTION_NAMESPACE="trading-bot-ingestion"
 TRAINIG_NAMESPACE="trading-bot-model-training"
 
+# Dynamically construct POSTGRES_CONN_STRING
+export POSTGRES_CONN_STRING="dbname='${POSTGRES_DB}' user='${POSTGRES_USER}' password='${POSTGRES_PASSWORD}' host='${POSTGRES_HOST}' port=${POSTGRES_PORT}"
+
 # Create or update postgres-secret
 kubectl -n $INGESTION_NAMESPACE create secret generic postgres-secret \
     --from-literal=POSTGRES_USER="$POSTGRES_USER" \
@@ -46,6 +49,17 @@ kubectl -n $INGESTION_NAMESPACE create secret generic kafka-secrets \
 kubectl -n $TRAINIG_NAMESPACE create secret generic minio-secret \
     --from-literal=MINIO_ROOT_USER="$MINIO_ROOT_USER" \
     --from-literal=MINIO_ROOT_PASSWORD="$MINIO_ROOT_PASSWORD" \
+    --from-literal=MINIO_ENDPOINT="$MINIO_ENDPOINT" \
+    --dry-run=client -o yaml | kubectl apply -f -
+
+# Create or update postgres-secret
+kubectl -n $TRAINIG_NAMESPACE create secret generic postgres-secret \
+    --from-literal=POSTGRES_USER="$POSTGRES_USER" \
+    --from-literal=POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+    --from-literal=POSTGRES_DB="$POSTGRES_DB" \
+    --from-literal=POSTGRES_HOST="$POSTGRES_HOST" \
+    --from-literal=POSTGRES_PORT="$POSTGRES_PORT" \
+    --from-literal=POSTGRES_CONN_STRING="$POSTGRES_CONN_STRING" \
     --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Secrets applied successfully."

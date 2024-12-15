@@ -1,6 +1,4 @@
-Sat Dec  7 21:02:53 CET 2024: Starting port-forward cleanup.
-Sat Dec  7 21:02:53 CET 2024: Terminated process 74619 for minio-svc
-Sat Dec  7 21:02:53 CET 2024: No active port-forward processes found for postgres-svc
-Sat Dec  7 21:05:13 CET 2024: Starting port-forward cleanup.
-Sat Dec  7 21:05:13 CET 2024: No active port-forward processes found for minio-svc
-Sat Dec  7 21:05:13 CET 2024: No active port-forward processes found for postgres-svc
+Sun Dec 15 16:41:43 CET 2024: Starting port-forward cleanup.
+Sun Dec 15 16:41:45 CET 2024: Terminated process 46272 for minio-svc
+Sun Dec 15 16:41:46 CET 2024: Terminated process 46273 for minio-svc
+Sun Dec 15 16:41:46 CET 2024: No active port-forward processes found for postgres-svc
