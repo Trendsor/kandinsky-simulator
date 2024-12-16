@@ -1,6 +1,7 @@
 import os
 import psycopg2
 import pandas as pd
+from datetime import datetime, timezone
 from minio import Minio
 from sklearn.linear_model import LinearRegression
 from minio.error import S3Error
@@ -17,7 +18,7 @@ POSTGRES_CONN_STRING = os.getenv("POSTGRES_CONN_STRING")
 BUCKET_NAME = "trained-models"
 
 # Local file paths
-MODEL_FILE_PATH = "trained_model.pkl"
+MODEL_FILE_PATH = f"{datetime.now(timezone.utc)}_trained_model.pkl"
 
 def fetch_training_data(conn_string):
     """

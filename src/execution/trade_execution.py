@@ -1,18 +1,25 @@
-import os
 import alpaca_trade_api as tradeapi
-from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv("dev.env")
+def send_order_to_broker(api_key, secret_key, base_url, symbol, qty, side="buy", order_type="market", time_in_force="gtc"):
+    """
+    Send an order to Alpaca.
 
-BROKER_API_KEY = os.getenv("BROKER_API_KEY")
-BROKER_SECRET_KEY = os.getenv("BROKER_SECRET_KEY")
-BROKER_API_URL = os.getenv("BROKER_API_URL")
-
-api = tradeapi.REST(BROKER_API_KEY, BROKER_SECRET_KEY, BROKER_API_URL, api_version='v2')
-
-def execute_trade(signal, symbol, quantity=1):
-    if signal == 1:
-        api.submit_order(symbol=symbol, qty=quantity, side="buy", type="market", time_in_force="gtc")
-    elif signal == -1:
-        api.submit_order(symbol=symbol, qty=quantity, side="sell", type="market", time_in_force="gtc")
+    Args:
+        api_key (str): Alpaca API key.
+        secret_key (str): Alpaca secret key.
+        base_url (str): Alpaca base Url.
+        symbol (str): The stock symbol to trade.
+        qty (int): Quantity to trade.
+        side (str): "buy" or "sell".
+        order_type (str): Type of order ("market", "limit", etc.).
+        time_in_force (str): Time in force ("day", "gtc", etc.).
+    """
+    api = tradeapi.REST(api_key, secret_key, base_url, api_version="v2")
+    order = api.submit_order(
+        symbol=symbol,
+        qty=qty,
+        side=side,
+        type=order_type,
+        time_in_force=time_in_force
+    )
+    return order

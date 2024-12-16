@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer-inference
+  namespace: trading-bot-execution
+  labels:
+    app: kafka-consumer-inference
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-consumer-inference
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer-inference
+    spec:
+      containers:
+      - name: kafka-consumer-inference
+        image: mhupp/kafka-consumer-inference:latest # Replace with your Docker Hub image
+        imagePullPolicy: Always
+        env:
+        # Kafka Configuration
+        - name: KAFKA_BOOTSTRAP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: kafka-config
+              key: bootstrap-servers
+        - name: RAW_TOPIC
+          value: "processed-stock-data"
+        
+        # Broker Configuration
+        - name: BROKER_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: broker-secrets
+              key: api-key
+        - name: BROKER_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: broker-secrets
+              key: api-secret
+        - name: BROKER_API_URL
+          value: "https://paper-api.alpaca.markets"
+        
+        # Postgres Configuration
+        - name: POSTGRES_CONN_STRING
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: connection-string
+        
+        # Model Storage
+        - name: MODEL_BUCKET
+          value: "trained-models"
+
+        # Volume Mounts for Logs
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        
+        ports:
+        - containerPort: 8080 # Replace with the port your app exposes if needed
+
+      volumes:
+      - name: logs
+        emptyDir: {}
+
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-consumer-inference
+  namespace: trading-bot-execution
+  labels:
+    app: kafka-consumer-inference
+spec:
+  selector:
+    app: kafka-consumer-inference
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

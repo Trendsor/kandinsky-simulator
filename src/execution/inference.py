@@ -1,8 +1,14 @@
-from utils.minio_utils import create_minio_client, download_file
+import pandas as pd
 
-# Initialize MinIO client
-minio_client = create_minio_client()
+def predict(model, input_data):
+    """
+    Use the model to make predictions.
 
-# Load model for inference
-download_path = "/tmp/markov_model.pkl"
-download_file(minio_client, bucket_name="models", object_name="markov_model.pkl", download_path=download_path)
+    Args:
+        model: The loaded model.
+        input_data (pd.DataFrame): The input data for prediction.
+
+    Returns:
+        Predictions as a pandas Dataframe.
+    """
+    return model.predict(input_data)
