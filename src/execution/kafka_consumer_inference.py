@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import pandas as pd
+import sklearn
 from confluent_kafka import Consumer, KafkaError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -26,8 +27,8 @@ BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVER")
 MODEL_BUCKET = "trained-models"
 BROKER_API_KEY = os.getenv("BROKER_API_KEY")
 BROKER_API_SECRET = os.getenv("BROKER_API_SECRET")
-BROKER_API_URL = os.getenv("BROKER_API_URL", "https://paper-api.alpaca.markets")
-POSTGRES_CONN_STRING = os.getenv("POSTGRES_CONN_STRING")
+BROKER_API_URL = os.getenv("BROKER_API_URL", "https://paper-api.alpaca.markets/v2/orders")
+POSTGRES_URL = os.getenv("POSTGRES_URL")
 
 # Kafka Consumer setup
 consumer = Consumer({
@@ -37,7 +38,7 @@ consumer = Consumer({
 })
 
 # SQLAlchemy session setup
-engine = create_engine(POSTGRES_CONN_STRING)
+engine = create_engine(POSTGRES_URL)
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -83,8 +84,8 @@ def handle_message(message, model):
         logger.info(f"Received input data: {input_df}")
 
         # Make predictions using the model
-        predictions = predict(model, input_df)
-        prediction = predictions[0]  # Access the first prediction value
+        predictions = predict(model, input_df, feature_columns=["price", "rolling_mean_200", "rolling_std_200"])
+        prediction = 0 # predictions[0]  # Access the first prediction value
         logger.info(f"Prediction: {prediction}")
 
         # Combine input data with the prediction

@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import pickle
 import pandas as pd
 from datetime import datetime, timezone
 from minio import Minio
@@ -18,7 +19,7 @@ POSTGRES_CONN_STRING = os.getenv("POSTGRES_CONN_STRING")
 BUCKET_NAME = "trained-models"
 
 # Local file paths
-MODEL_FILE_PATH = f"{datetime.now(timezone.utc)}_trained_model.pkl"
+MODEL_FILE_PATH =f"{datetime.now(timezone.utc).strftime('%Y%m%d')}_trained_model.pkl"
 
 def fetch_training_data(conn_string):
     """
@@ -68,8 +69,8 @@ def save_model(model, file_path):
     """
     try:
         # Placeholder: Replace with actual model saving logic
-        with open(file_path, "w") as f:
-            f.write(str(model))  # Serialize model
+        with open(file_path, "wb") as f:  # Save as binary
+            pickle.dump(model, f)
         logger.info(f"Model saved to {file_path}.")
     except Exception as e:
         logger.error(f"Error saving model to {file_path}: {e}")

@@ -4,6 +4,7 @@ import asyncio
 import logging
 from kubernetes import client, config
 from alpaca.data.live.stock import StockDataStream
+from alpaca.data.live.crypto import CryptoDataStream
 from confluent_kafka import Producer
 
 # Logging setup
@@ -18,9 +19,10 @@ KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "stock_data.trades")
 KAFKA_BOOTSTRAP_SERVER = os.getenv("KAFKA_BOOTSTRAP_SERVER")
 BROKER_API_KEY = os.getenv("BROKER_API_KEY")
 BROKER_API_SECRET = os.getenv("BROKER_API_SECRET")
-BROKER_API_URL = os.getenv("BROKER_API_URL", "wss://stream.data.alpaca.markets/v2")
+BROKER_API_URL = os.getenv("BROKER_API_URL", "wss://stream.data.alpaca.markets/v1beta3/crypto/us")
 NAMESPACE = os.getenv("NAMESPACE", "trading-bot-ingestion")
-SYMBOLS = os.getenv("SYMBOLS", "AAPL,TSLA").split(",")  # Default symbols to track
+SYMBOLS = os.getenv("SYMBOLS", "BTC/USD,ETH/USD").split(",")  # Default symbols to track
+logger.info(f"Tracking crypto symbols: {SYMBOLS}")
 
 # Kubernetes API client
 v1 = client.CoreV1Api()
@@ -78,19 +80,41 @@ async def start_alpaca_stream():
     Starts the Alpaca WebSocket stream and subscribes to trades for configured symbols.
     """
     logger.info("Setting up Alpaca WebSocket stream.")
-    stream = StockDataStream(api_key=BROKER_API_KEY, secret_key=BROKER_API_SECRET, url_override=BROKER_API_URL)
+
+    # Initialize the CryptoDataStream
+    try:
+        stream = CryptoDataStream(
+            api_key=BROKER_API_KEY,
+            secret_key=BROKER_API_SECRET,
+            url_override=BROKER_API_URL
+        )
+        if stream is None:
+            logger.error("Failed to initialize CryptoDataStream: stream is None.")
+            return
+        logger.info("CryptoDataStream initialized successfully.")
+    except Exception as e:
+        logger.error(f"Failed to initialize CryptoDataStream: {e}")
+        return
 
     # Subscribe to trade streams for the configured symbols
-    for symbol in SYMBOLS:
-        logger.info(f"Subscribing to trade data for symbol: {symbol}")
-        stream.subscribe_trades(trade_handler, symbol)
+    try:
+        for symbol in SYMBOLS:
+            logger.info(f"Subscribing to trade data for symbol: {symbol}")
+            stream.subscribe_trades(trade_handler, symbol)
+        logger.info(f"Subscribed to trades for symbols: {SYMBOLS}")
+    except Exception as e:
+        logger.error(f"Failed to subscribe to trades: {e}")
+        return
 
+    # Run the WebSocket stream
     try:
         logger.info("Running Alpaca WebSocket stream.")
-        await stream.run()
+        await asyncio.to_thread(stream.run)  # Run in a separate thread to avoid blocking the event loop
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
-        raise
+    finally:
+        logger.info("Exiting Alpaca WebSocket stream.")
+
 
 def main():
     """

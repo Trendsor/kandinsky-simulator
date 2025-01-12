@@ -23,37 +23,43 @@ spec:
         # Kafka Configuration
         - name: KAFKA_BOOTSTRAP_SERVER
           valueFrom:
-            configMapKeyRef:
-              name: kafka-config
-              key: bootstrap-servers
-        - name: RAW_TOPIC
-          value: "processed-stock-data"
-        
+            secretKeyRef:
+              name: kafka-secrets
+              key: KAFKA_BOOTSTRAP_SERVER
         # Broker Configuration
         - name: BROKER_API_KEY
           valueFrom:
             secretKeyRef:
-              name: broker-secrets
-              key: api-key
+              name: broker-data-api-secret
+              key: BROKER_API_KEY
         - name: BROKER_API_SECRET
           valueFrom:
             secretKeyRef:
-              name: broker-secrets
-              key: api-secret
+              name: broker-data-api-secret
+              key: BROKER_API_SECRET
         - name: BROKER_API_URL
-          value: "https://paper-api.alpaca.markets"
-        
-        # Postgres Configuration
-        - name: POSTGRES_CONN_STRING
           valueFrom:
             secretKeyRef:
-              name: postgres-secrets
-              key: connection-string
-        
-        # Model Storage
-        - name: MODEL_BUCKET
-          value: "trained-models"
-
+              name: broker-data-api-secret
+              key: BROKER_API_URL  
+        # Postgres Configuration
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_URL
+        - name: MINIO_ENDPOINT
+          value: http://minio-svc.trading-bot-model-training.svc.cluster.local:9000
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_USER
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio-secret
+              key: MINIO_ROOT_PASSWORD
         # Volume Mounts for Logs
         volumeMounts:
         - name: logs
